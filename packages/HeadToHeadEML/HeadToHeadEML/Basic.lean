@@ -80,8 +80,8 @@ theorem red_indistinguishable : PiRed s₁ = PiRed s₂ := rfl
 /-- The lift can. -/
 theorem lift_distinguishable : s₁ ≠ s₂ := by
   intro h
-  -- The components `A`, `t`, `kappa` differ, so the structures differ.
   injection h with hA _ _ ht _
+  cases hA
 
 /-! ## Corollary: any observable depending on (A, t, kappa) is inaccessible
     to any EML-style computation that factors through `PiRed`. -/

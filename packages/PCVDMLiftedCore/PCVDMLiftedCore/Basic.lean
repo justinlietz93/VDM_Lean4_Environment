@@ -1,107 +1,89 @@
-/-
-  PCVDMLiftedCore.Basic
-
-  The Phase-Calculus primitive layer: lifted state, atomic operators Q / B / L,
-  derived macro operators R / S / T, Red-filter quotient, and termination report.
-
-  All proofs in this file are `rfl` or finite case-splits over Bool, so the
-  package type-checks in seconds with no external dependencies.
-
-  Corresponds to the primitive-operator layer of the merged Phase-Calculus
-  manuscript (Theorems in §3.5-3.6; selector-closed macro law of Theorem 7.10).
--/
+import Std
 
 namespace PCVDMLiftedCore
 
-/-- Lifted phase state: host class `A`, balanced pair `(u,v)`, tick counter `t`. -/
-structure PhaseState where
+structure BPair where
+  u : Nat
+  v : Nat
+  deriving DecidableEq, Repr
+
+def sortPair (a b : Nat) : BPair :=
+  if a <= b then { u := a, v := b } else { u := b, v := a }
+
+def refine (p : BPair) : BPair :=
+  sortPair p.v (p.u + p.v)
+
+def iterate {α : Type} (n : Nat) (f : α → α) (x : α) : α :=
+  match n with
+  | 0 => x
+  | Nat.succ k => iterate k f (f x)
+
+def b9 : BPair := iterate 9 refine { u := 1, v := 1 }
+
+theorem B9_anchor_55_89 : b9 = { u := 55, v := 89 } := by
+  native_decide
+
+theorem B9_product_4895 : b9.u * b9.v = 4895 := by
+  native_decide
+
+structure Phase where
   A : Nat
   u : Nat
   v : Nat
-  t : Nat
-  deriving Repr, DecidableEq
+  tick : Nat
+  kappa : Nat
+  deriving DecidableEq, Repr
 
-/-- Quarter continuation: advances the tick counter by one. -/
-def Q (x : PhaseState) : PhaseState :=
-  { x with t := x.t + 1 }
+def visiblePhase (p : Phase) : Nat := p.tick % 4
 
-/-- Balanced refinement: `(u,v) ↦ (v, u+v)`. Tick unchanged. -/
-def B (x : PhaseState) : PhaseState :=
-  { x with u := x.v, v := x.u + x.v }
+def recomputeKappa (tick : Nat) : Nat := tick / 4
 
-/-- Host lift: increments `A`, advances tick; caller re-seeds `(u,v)`. -/
-def L (x : PhaseState) : PhaseState :=
-  { x with A := x.A + 1, t := x.t + 1 }
+def Q (p : Phase) : Phase :=
+  { p with tick := p.tick + 1, kappa := recomputeKappa (p.tick + 1) }
 
-/-- Macro `R = Q ∘ B`: executable refinement continuation. -/
-def R (x : PhaseState) : PhaseState := Q (B x)
+def B (p : Phase) : Phase :=
+  let q := refine { u := p.u, v := p.v }
+  { p with u := q.u, v := q.v }
 
-/-- Macro `S = Q`: same-host continuation. -/
-def S (x : PhaseState) : PhaseState := Q x
+def L (p : Phase) : Phase :=
+  let nextA := p.A + 1
+  { A := nextA, u := 1, v := Nat.max 1 nextA, tick := p.tick + 1,
+    kappa := recomputeKappa (p.tick + 1) }
 
-/-- Macro `T`: orthogonal re-articulation. Re-seeds the pair at the new class. -/
-def T (x : PhaseState) : PhaseState :=
-  { A := x.A + 1, u := 1, v := x.A + 1, t := x.t + 1 }
+def Q4 (p : Phase) : Phase := Q (Q (Q (Q p)))
 
-/-- Red projector `Π_Red`: forget everything except the balanced pair. -/
-def PiRed (x : PhaseState) : Nat × Nat := (x.u, x.v)
+def p0 : Phase := { A := 0, u := 1, v := 1, tick := 0, kappa := 0 }
+def p1 : Phase := { A := 0, u := 1, v := 1, tick := 4, kappa := 1 }
 
-/-- Red-filter generator `G_Red : (u,v) ↦ (v, u+v)`. -/
-def GRed (q : Nat × Nat) : Nat × Nat := (q.2, q.1 + q.2)
+theorem visible_not_state_complete : p0 ≠ p1 ∧ visiblePhase p0 = visiblePhase p1 := by
+  native_decide
 
-/-! ## Primitive operator invariants -/
+theorem Q4_preserves_visible_sample : visiblePhase (Q4 p0) = visiblePhase p0 := by
+  native_decide
 
-theorem Q_adds_one_tick (x : PhaseState) : (Q x).t = x.t + 1 := rfl
+theorem Q4_increments_kappa_sample : (Q4 p0).kappa = p0.kappa + 1 := by
+  native_decide
 
-theorem B_preserves_tick (x : PhaseState) : (B x).t = x.t := rfl
+inductive Macro where
+  | R | S | T
+  deriving DecidableEq, Repr
 
-theorem L_adds_one_tick (x : PhaseState) : (L x).t = x.t + 1 := rfl
+def selector (width floorDen : Nat) (p : Phase) : Macro :=
+  if p.tick % width = width - 1 then Macro.T
+  else if p.u * p.v < floorDen then Macro.R
+  else Macro.S
 
-/-- **Red quotient theorem for B.**
-    The Red projection commutes with `B`: `Π_Red ∘ B = G_Red ∘ Π_Red`. -/
-theorem red_quotient_B (x : PhaseState) : PiRed (B x) = GRed (PiRed x) := rfl
+theorem selector_refines_initial : selector 64 4096 p0 = Macro.R := by
+  native_decide
 
-/-! ## Macro / primitive equivalences -/
+def anchorPhase : Phase := { A := 0, u := 55, v := 89, tick := 10, kappa := 2 }
 
-theorem macro_R_is_Q_after_B (x : PhaseState) : R x = Q (B x) := rfl
-theorem macro_S_is_Q          (x : PhaseState) : S x = Q x := rfl
-theorem macro_T_lifts_host    (x : PhaseState) : (T x).A = x.A + 1 := rfl
+theorem selector_holds_anchor : selector 64 4096 anchorPhase = Macro.S := by
+  native_decide
 
-/-! ## Termination gate -/
+def carryPhase : Phase := { A := 0, u := 1, v := 1, tick := 63, kappa := 15 }
 
-/-- Three-witness termination condition for the metriplectic descent. -/
-structure TerminationReport where
-  lowFieldVariance : Bool
-  zeroWalkers : Bool
-  stationaryEnergy : Bool
-  deriving Repr, DecidableEq
-
-/-- Self-termination: all three witnesses must fire. -/
-def SelfTerminated (r : TerminationReport) : Bool :=
-  r.lowFieldVariance && r.zeroWalkers && r.stationaryEnergy
-
-/-- Self-termination implies zero walkers. -/
-theorem self_termination_requires_zero_walkers
-    (r : TerminationReport) (h : SelfTerminated r = true) :
-    r.zeroWalkers = true := by
-  unfold SelfTerminated at h
-  cases r.lowFieldVariance <;> cases r.zeroWalkers <;> cases r.stationaryEnergy
-    <;> simp at h ⊢
-
-/-- Self-termination implies stationary energy. -/
-theorem self_termination_requires_stationary_energy
-    (r : TerminationReport) (h : SelfTerminated r = true) :
-    r.stationaryEnergy = true := by
-  unfold SelfTerminated at h
-  cases r.lowFieldVariance <;> cases r.zeroWalkers <;> cases r.stationaryEnergy
-    <;> simp at h ⊢
-
-/-- Self-termination implies low field variance. -/
-theorem self_termination_requires_low_field_variance
-    (r : TerminationReport) (h : SelfTerminated r = true) :
-    r.lowFieldVariance = true := by
-  unfold SelfTerminated at h
-  cases r.lowFieldVariance <;> cases r.zeroWalkers <;> cases r.stationaryEnergy
-    <;> simp at h ⊢
+theorem selector_lifts_on_carry : selector 64 4096 carryPhase = Macro.T := by
+  native_decide
 
 end PCVDMLiftedCore

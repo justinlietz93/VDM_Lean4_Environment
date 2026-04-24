@@ -1,6 +1,0 @@
-name = "pc_vdm_lifted_descent"
-version = "0.1.0"
-defaultTargets = ["PCVDMLiftedDescent"]
-
-[[lean_lib]]
-name = "PCVDMLiftedDescent"
