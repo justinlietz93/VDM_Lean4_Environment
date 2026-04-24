@@ -27,14 +27,14 @@ a working one.
 
 | Package | Status |
 |---|---|
-| `PCVDMLiftedCore` | ![PCVDMLiftedCore](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/vdm-lean-certifier/PCVDMLiftedCore.json) |
-| `PCVDMLiftedDescent` | ![PCVDMLiftedDescent](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/vdm-lean-certifier/PCVDMLiftedDescent.json) |
-| `HeadToHeadEML` | ![HeadToHeadEML](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/vdm-lean-certifier/HeadToHeadEML.json) |
+| `PCVDMLiftedCore` | ![PCVDMLiftedCore](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/VDM_Lean4_Environment/PCVDMLiftedCore.json) |
+| `PCVDMLiftedDescent` | ![PCVDMLiftedDescent](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/VDM_Lean4_Environment/PCVDMLiftedDescent.json) |
+| `HeadToHeadEML` | ![HeadToHeadEML](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/VDM_Lean4_Environment/HeadToHeadEML.json) |
 
 ## Repository layout
 
 ```
-vdm-lean-certifier/
+VDM_Lean4_Environment/
   .github/workflows/
     build.yml                 Matrix-builds every package on push / PR.
     release.yml               Tagged releases bundle .olean artifacts.
