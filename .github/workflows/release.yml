@@ -1,0 +1,83 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v0.1.0)'
+        required: true
+
+jobs:
+  # Reuse the main build to produce fresh .olean artifacts.
+  build:
+    uses: ./.github/workflows/build.yml
+
+  bundle:
+    name: Bundle .olean + verification index
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all .olean artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: _oleans
+          pattern: olean-*
+
+      - name: Download all badge JSONs
+        uses: actions/download-artifact@v4
+        with:
+          path: _badges
+          pattern: badge-*
+
+      - name: Assemble release bundle
+        run: |
+          set -e
+          mkdir -p release
+          # Per-package olean archives
+          for d in _oleans/olean-*; do
+            name=$(basename "$d" | sed 's/^olean-//')
+            (cd "$d" && zip -rq "../../release/${name}-oleans.zip" .)
+            echo "Packaged: ${name}-oleans.zip"
+          done
+          # Consolidated verification index
+          {
+            echo "# VDM Mechanized Verification Index"
+            echo ""
+            echo "Release: ${GITHUB_REF_NAME:-${{ github.event.inputs.tag }}}"
+            echo "Commit: ${GITHUB_SHA}"
+            echo "Built: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo ""
+            echo "| Package | Status | Badge |"
+            echo "|---|---|---|"
+            for b in _badges/badge-*/*.json; do
+              pkg=$(basename "$(dirname "$b")" | sed 's/^badge-//')
+              status=$(jq -r .message "$b")
+              color=$(jq -r .color "$b")
+              echo "| ${pkg} | ${status} | ![${pkg}](https://img.shields.io/endpoint?url=https://${GITHUB_REPOSITORY_OWNER}.github.io/$(basename ${{ github.repository }})/${pkg}.json) |"
+            done
+          } > release/VERIFICATION_INDEX.md
+          ls -la release/
+
+      - name: Compute SHA256 manifest
+        run: |
+          cd release
+          sha256sum *.zip VERIFICATION_INDEX.md > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || github.event.inputs.tag }}
+          name: ${{ github.ref_name || github.event.inputs.tag }}
+          body_path: release/VERIFICATION_INDEX.md
+          files: |
+            release/*.zip
+            release/VERIFICATION_INDEX.md
+            release/SHA256SUMS

@@ -1,0 +1,6 @@
+name = "pc_vdm_lifted_core"
+version = "0.1.0"
+defaultTargets = ["PCVDMLiftedCore"]
+
+[[lean_lib]]
+name = "PCVDMLiftedCore"

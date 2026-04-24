@@ -1,0 +1,6 @@
+name = "head_to_head_eml"
+version = "0.1.0"
+defaultTargets = ["HeadToHeadEML"]
+
+[[lean_lib]]
+name = "HeadToHeadEML"

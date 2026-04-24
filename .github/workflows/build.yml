@@ -1,0 +1,165 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel superseded runs on the same branch
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    name: Discover packages
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.list.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        name: Enumerate packages/*/lakefile.toml
+        run: |
+          set -euo pipefail
+          # Every directory one level under packages/ that contains a lakefile.toml
+          # and is not the _template directory.
+          pkgs=$(
+            find packages -mindepth 2 -maxdepth 2 -name lakefile.toml -printf '%h\n' \
+              | awk -F/ '{print $NF}' \
+              | grep -v '^_' \
+              | sort -u \
+              | jq -Rsc 'split("\n") | map(select(length > 0))'
+          )
+          if [ -z "$pkgs" ] || [ "$pkgs" = "[]" ]; then
+            echo "error: no packages discovered" >&2
+            exit 1
+          fi
+          echo "Discovered packages: $pkgs"
+          echo "packages=$pkgs" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: "Lean: ${{ matrix.package }}"
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      # One failing package does not abort the others.
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.discover.outputs.packages) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan (Lean version manager)
+        run: |
+          set -e
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Read package toolchain
+        id: toolchain
+        run: |
+          cd "packages/${{ matrix.package }}"
+          tc=$(cat lean-toolchain)
+          echo "Using Lean toolchain: $tc"
+          echo "toolchain=$tc" >> "$GITHUB_OUTPUT"
+
+      - name: Cache .lake directory
+        uses: actions/cache@v4
+        with:
+          path: packages/${{ matrix.package }}/.lake
+          key: lake-${{ runner.os }}-${{ matrix.package }}-${{ steps.toolchain.outputs.toolchain }}-${{ hashFiles(format('packages/{0}/**/*.lean', matrix.package), format('packages/{0}/lakefile.toml', matrix.package)) }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ matrix.package }}-${{ steps.toolchain.outputs.toolchain }}-
+
+      - name: lake build
+        id: build
+        run: |
+          cd "packages/${{ matrix.package }}"
+          lake --version
+          lake build 2>&1 | tee build.log
+          echo "status=pass" >> "$GITHUB_OUTPUT"
+
+      - name: Count theorems in package
+        id: count
+        if: always()
+        run: |
+          cd "packages/${{ matrix.package }}"
+          # Count top-level `theorem` declarations; approximate but stable.
+          count=$(grep -rhE '^[[:space:]]*theorem\b' --include='*.lean' . | wc -l || echo 0)
+          echo "Theorem count: $count"
+          echo "theorems=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Emit shields.io badge JSON
+        if: always()
+        run: |
+          status="${{ steps.build.outputs.status }}"
+          if [ -z "$status" ]; then status="fail"; fi
+          color="brightgreen"
+          if [ "$status" != "pass" ]; then color="red"; fi
+          label="Lean: ${{ matrix.package }}"
+          message="$status · ${{ steps.count.outputs.theorems }} theorems"
+          mkdir -p _badge
+          cat > "_badge/${{ matrix.package }}.json" <<EOF
+          {
+            "schemaVersion": 1,
+            "label": "$label",
+            "message": "$message",
+            "color": "$color"
+          }
+          EOF
+          cat "_badge/${{ matrix.package }}.json"
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/build.log
+          if-no-files-found: ignore
+
+      - name: Upload .olean artifacts
+        if: steps.build.outputs.status == 'pass'
+        uses: actions/upload-artifact@v4
+        with:
+          name: olean-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/.lake/build/lib/**/*.olean
+          if-no-files-found: warn
+
+      - name: Upload badge JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: badge-${{ matrix.package }}
+          path: _badge/${{ matrix.package }}.json
+
+  publish-badges:
+    name: Publish badges to gh-pages
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect badge JSONs
+        uses: actions/download-artifact@v4
+        with:
+          path: _badges_raw
+          pattern: badge-*
+      - name: Flatten into a single directory
+        run: |
+          mkdir -p badges
+          find _badges_raw -name '*.json' -exec cp {} badges/ \;
+          ls -la badges/
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./badges
+          publish_branch: gh-pages
+          keep_files: true

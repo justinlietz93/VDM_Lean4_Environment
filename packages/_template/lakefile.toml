@@ -1,0 +1,6 @@
+name = "template_package"
+version = "0.1.0"
+defaultTargets = ["TemplatePackage"]
+
+[[lean_lib]]
+name = "TemplatePackage"

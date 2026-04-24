@@ -1,0 +1,20 @@
+# Lake build artifacts
+**/.lake/
+**/lake-packages/
+
+# Local badge previews from scripts/gen_badges.py
+/badges/
+
+# Editor detritus
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Python ephemera from scripts/
+__pycache__/
+*.pyc
+
+# Temporary build logs (CI uploads the real ones as artifacts)
+**/build.log

@@ -1,0 +1,29 @@
+{
+  "name": "vdm-lean-certifier",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": false,
+      "upgradePackages": true
+    }
+  },
+
+  "postCreateCommand": "curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none && echo 'export PATH=\"$HOME/.elan/bin:$PATH\"' >> ~/.bashrc",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "leanprover.lean4"
+      ],
+      "settings": {
+        "lean4.serverEnv": {
+          "PATH": "${env:HOME}/.elan/bin:${env:PATH}"
+        }
+      }
+    }
+  },
+
+  "remoteUser": "vscode"
+}
