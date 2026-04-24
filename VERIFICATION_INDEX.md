@@ -14,6 +14,10 @@ isolates failures — a broken theorem in one package cannot redden another.
 
 ### `PCVDMLiftedCore`
 
+| Package | Status |
+|---|---|
+| `PCVDMLiftedCore` | ![PCVDMLiftedCore](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/VDM_Lean4_Environment/PCVDMLiftedCore.json) |
+
 The Phase-Calculus primitive layer.
 
 **Content.** The lifted state `PhaseState (A, u, v, t)`, the primitive operators
@@ -34,6 +38,10 @@ generator `G_Red`, and the three-witness termination report.
 
 ### `PCVDMLiftedDescent`
 
+| Package | Status |
+|---|---|
+| `PCVDMLiftedDescent` | ![PCVDMLiftedDescent](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/VDM_Lean4_Environment/PCVDMLiftedDescent.json) |
+
 The solver's theorem surface, matching `pc_vdm_lifted_descent_solver` Python.
 
 **Content.** A standalone copy of the lifted primitives, plus a `SolverGate`
@@ -53,6 +61,10 @@ self-termination" discipline as a Lean-level invariant.
 ---
 
 ### `HeadToHeadEML`
+
+| Package | Status |
+|---|---|
+| `HeadToHeadEML` | ![HeadToHeadEML](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/VDM_Lean4_Environment/HeadToHeadEML.json) |
 
 Mechanized structural claim: **EML is the Red-filter quotient of the lifted
 Phase-Calculus kernel.**
