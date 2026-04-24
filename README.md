@@ -16,6 +16,8 @@ not. There is no third option.
 
 ## Package status
 
+[![build](https://github.com/justinlietz93/VDM_Lean4_Environment/actions/workflows/build.yml/badge.svg)](https://github.com/justinlietz93/VDM_Lean4_Environment/actions/workflows/build.yml)
+
 Each package is a standalone Lake project with its own `lean-toolchain`. Packages do
 not depend on each other unless explicitly required, so a broken package cannot redden
 a working one.
@@ -25,11 +27,9 @@ a working one.
 
 | Package | Status |
 |---|---|
-| `PCVDMLiftedCore` | ![PCVDMLiftedCore](https://img.shields.io/endpoint?url=https://REPLACE_ME.github.io/vdm-lean-certifier/PCVDMLiftedCore.json) |
-| `PCVDMLiftedDescent` | ![PCVDMLiftedDescent](https://img.shields.io/endpoint?url=https://REPLACE_ME.github.io/vdm-lean-certifier/PCVDMLiftedDescent.json) |
-| `HeadToHeadEML` | ![HeadToHeadEML](https://img.shields.io/endpoint?url=https://REPLACE_ME.github.io/vdm-lean-certifier/HeadToHeadEML.json) |
-
-Replace `REPLACE_ME` with your GitHub username or organization when you clone.
+| `PCVDMLiftedCore` | ![PCVDMLiftedCore](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/vdm-lean-certifier/PCVDMLiftedCore.json) |
+| `PCVDMLiftedDescent` | ![PCVDMLiftedDescent](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/vdm-lean-certifier/PCVDMLiftedDescent.json) |
+| `HeadToHeadEML` | ![HeadToHeadEML](https://img.shields.io/endpoint?url=https://justinlietz93.github.io/vdm-lean-certifier/HeadToHeadEML.json) |
 
 ## Repository layout
 
