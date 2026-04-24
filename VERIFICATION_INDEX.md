@@ -1,3 +1,6 @@
+**Certified at commit** `a0bf71041b237e1d06d1a0263f8d59cbe6dacadb`  
+All theorems mechanically verified. All badges green. Zero unsolved goals.
+
 # VDM Mechanized Verification Index
 
 This file is the top-level map of what this repository mechanically verifies.
