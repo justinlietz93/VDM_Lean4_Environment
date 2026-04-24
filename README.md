@@ -18,6 +18,8 @@ not. There is no third option.
 
 [![build](https://github.com/justinlietz93/VDM_Lean4_Environment/actions/workflows/build.yml/badge.svg)](https://github.com/justinlietz93/VDM_Lean4_Environment/actions/workflows/build.yml)
 
+Certified at commit [`a0bf71041b237e1d06d1a0263f8d59cbe6dacadb`](https://github.com/justinlietz93/VDM_Lean4_Environment/releases/tag/v1.5_10.5281/zenodo.19724444)
+
 Each package is a standalone Lake project with its own `lean-toolchain`. Packages do
 not depend on each other unless explicitly required, so a broken package cannot redden
 a working one.
