@@ -1,0 +1,190 @@
+{
+  "excludes": {
+    "dirs": [
+      ".cache",
+      ".git",
+      ".idea",
+      ".mypy_cache",
+      ".pytest_cache",
+      ".venv",
+      ".vscode",
+      "VDM_Nexus/build",
+      "__pycache__",
+      "build",
+      "dist",
+      "node_modules",
+      "out",
+      "venv"
+    ],
+    "file_name_patterns": [
+      "PROVENANCE_manifest_*.json",
+      "*_PROVENANCE_manifest_*.json"
+    ],
+    "file_suffixes": [
+      ".dll",
+      ".dylib",
+      ".exe",
+      ".o",
+      ".obj",
+      ".pdb",
+      ".pyc",
+      ".pyo",
+      ".so"
+    ]
+  },
+  "file_count": 29,
+  "files": [
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "sha256": "b15d4b50fce6382195b3e7d6f3e20bdca4e8bfda19bebd064e21b2999f83febb",
+      "size": 744
+    },
+    {
+      "path": ".github/workflows/build.yml",
+      "sha256": "dc2fac5a9d3eb0a2b24a8a4115683c655dfc28300a37f5171c1e82d23d726121",
+      "size": 5364
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "7dd31bd5d8a30f2c7acab561ad31326bc6962fbd27baf957bf7e0ea0786da588",
+      "size": 2576
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "5c257b1d6a9b991662ea781a9cc8abc5e0ba6c71ec56e82c11cf367523e8e701",
+      "size": 297
+    },
+    {
+      "path": "HANDOFF.md",
+      "sha256": "5d7277faf3665499d88c6a36e72e30f13634f67ab87b0ec71c564469890e6b37",
+      "size": 5785
+    },
+    {
+      "path": "README.md",
+      "sha256": "78afb435b6081a1a5a33cce20fb7bda931fd1fbc12c143a53d7da2bed95b8c71",
+      "size": 4964
+    },
+    {
+      "path": "VERIFICATION_INDEX.md",
+      "sha256": "c4d29214807e2fe30318558bebb3855c582f3dd053b86dcac09f4ebcb3a4b12e",
+      "size": 3760
+    },
+    {
+      "path": "lean-toolchain",
+      "sha256": "d24fed434d3b13adfaab57724a0a7f270ea8bf1c818b5ae5cf25cbce24dd685c",
+      "size": 25
+    },
+    {
+      "path": "packages/HeadToHeadEML/HeadToHeadEML.lean",
+      "sha256": "18fef6fbbf8748c02456dc895921d1b37f07bee68aa41b3bb5fb5438810ea446",
+      "size": 603
+    },
+    {
+      "path": "packages/HeadToHeadEML/HeadToHeadEML/Basic.lean",
+      "sha256": "dd5403aee8122910d8b563f24c90cb826482d18ffeb6d1eb2816e26d98902059",
+      "size": 3925
+    },
+    {
+      "path": "packages/HeadToHeadEML/lake-manifest.json",
+      "sha256": "9f0b756a53e97718e2939e6eddd1ef8cf9a3566600499acfb4b0e6f35f39812d",
+      "size": 122
+    },
+    {
+      "path": "packages/HeadToHeadEML/lakefile.toml",
+      "sha256": "2df4e23a78b0b6d00ce68e790c1359492aa97e3e455c31327028ba1622f30f43",
+      "size": 116
+    },
+    {
+      "path": "packages/HeadToHeadEML/lean-toolchain",
+      "sha256": "d24fed434d3b13adfaab57724a0a7f270ea8bf1c818b5ae5cf25cbce24dd685c",
+      "size": 25
+    },
+    {
+      "path": "packages/PCVDMLiftedCore/PCVDMLiftedCore.lean",
+      "sha256": "401deb95edd86f2fe8cc70c172cccc7c4e100693a6b0d60e8b07cdcaf8d05a3d",
+      "size": 29
+    },
+    {
+      "path": "packages/PCVDMLiftedCore/PCVDMLiftedCore/Basic.lean",
+      "sha256": "2c3235192e092ecc1f1ee4b73134ef7572d873725f85a204d384c30376fd6a5b",
+      "size": 2341
+    },
+    {
+      "path": "packages/PCVDMLiftedCore/README.md",
+      "sha256": "ac0d073f0f1761f0527d030b1a90a9a24e85b0e6e98c744207d5a87438cbe6e5",
+      "size": 438
+    },
+    {
+      "path": "packages/PCVDMLiftedCore/lake-manifest.json",
+      "sha256": "00c5dc59d5f51f13f833d6d2cd1dc5a5ae0caa79e65d171e1b479b9824a39bf4",
+      "size": 124
+    },
+    {
+      "path": "packages/PCVDMLiftedCore/lakefile.toml",
+      "sha256": "bb7a9ee1530fc65e4165ba87a4f323c47dadd65494d0e9685807fc426015f0ff",
+      "size": 122
+    },
+    {
+      "path": "packages/PCVDMLiftedCore/lean-toolchain",
+      "sha256": "d24fed434d3b13adfaab57724a0a7f270ea8bf1c818b5ae5cf25cbce24dd685c",
+      "size": 25
+    },
+    {
+      "path": "packages/PCVDMLiftedDescent/Basic.lean",
+      "sha256": "c4fbc408c7270a45c54b1f3ba513b7ea5ef6accbd650aa9e7732c7c382e17add",
+      "size": 1814
+    },
+    {
+      "path": "packages/PCVDMLiftedDescent/PCVDMLiftedDescent.lean",
+      "sha256": "a97a70f6a45598078d8455c0773151b36892edc45e617a50698109afcf33ed9f",
+      "size": 32
+    },
+    {
+      "path": "packages/PCVDMLiftedDescent/lakefile.toml",
+      "sha256": "af01f7b4948e4cc27e94ab0a46d48b796d5e6021f1e31051b6ac260483f63e86",
+      "size": 130
+    },
+    {
+      "path": "packages/PCVDMLiftedDescent/lean-toolchain",
+      "sha256": "d24fed434d3b13adfaab57724a0a7f270ea8bf1c818b5ae5cf25cbce24dd685c",
+      "size": 25
+    },
+    {
+      "path": "packages/_template/TemplatePackage.lean",
+      "sha256": "29785848457ff0ac25221faa0e872e23a334ea3deb03dd3b3cbb3221f903d508",
+      "size": 29
+    },
+    {
+      "path": "packages/_template/TemplatePackage/Basic.lean",
+      "sha256": "bd910318168813525f1825e60fb0c8b9877ff71dd0fcabbeb4c803b52c5e2e9f",
+      "size": 742
+    },
+    {
+      "path": "packages/_template/lakefile.toml",
+      "sha256": "9c7e19dc96064a687888efd52e458379261bbf4f3601e855895ef4203070df3f",
+      "size": 120
+    },
+    {
+      "path": "packages/_template/lean-toolchain",
+      "sha256": "d24fed434d3b13adfaab57724a0a7f270ea8bf1c818b5ae5cf25cbce24dd685c",
+      "size": 25
+    },
+    {
+      "path": "scripts/gen_badges.py",
+      "sha256": "6533ee5e712b678bf21080b1f0f073f3c02a77d9ba491f09e02482e759ceda22",
+      "size": 2605
+    },
+    {
+      "path": "scripts/new_package.sh",
+      "sha256": "a588037d377175d937cb6ac0983c456df943e46bd411940cd1d4862caf2489dd",
+      "size": 1703
+    }
+  ],
+  "generated_utc": "2026-04-24T16:33:44.349943Z",
+  "git_commit": "76b2a4848faeaf1eadd0f50dbb1b6d11a7340f43",
+  "git_dirty": true,
+  "repo_root": "/home/justin/git/VDM_Lean4_Environment",
+  "schema": "vdm.provenance.manifest.v1",
+  "total_bytes": 38610,
+  "tree_hash": "cea110df2fe9bd6a3f5a3b27cc7bf931bd054e3d0de6e6b7c5bb0543c081a0e4"
+}
